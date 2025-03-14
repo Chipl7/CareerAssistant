@@ -22,6 +22,7 @@ public class Vacancy {
 
     private String name;
 
+    @JsonProperty("alternate_url")
     private String alternateUrl;
 
     public void setId(Long id) {
@@ -39,6 +40,7 @@ public class Vacancy {
     public void setName(String name) {
         this.name = name;
     }
+
 
     public void setAlternateUrl(String alternateUrl) {
         this.alternateUrl = alternateUrl;
