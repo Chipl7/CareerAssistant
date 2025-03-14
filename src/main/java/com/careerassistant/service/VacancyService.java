@@ -5,13 +5,11 @@ import com.careerassistant.exception.VacancyNotFoundException;
 import com.careerassistant.model.Vacancy;
 import com.careerassistant.repository.VacancyRepository;
 import com.careerassistant.serializer.VacancyListResponse;
-import com.careerassistant.serializer.VacancyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
