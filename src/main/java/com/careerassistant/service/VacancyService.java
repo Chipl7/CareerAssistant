@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,19 +34,18 @@ public class VacancyService {
     //TODO
     public void findAndSaveVacancy() {
         try {
-            ResponseEntity<VacancyListResponse> response = restTemplate.getForEntity("https://api.hh.ru/vacancies", VacancyListResponse.class);
-            if (response.getStatusCode() == HttpStatus.OK) {
-                VacancyListResponse vacancyListResponse = response.getBody();
-                if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
-                    for (VacancyResponse vacancyResponse : vacancyListResponse.getItems()) {
-                        System.out.println(vacancyResponse.getId());
-                        System.out.println(vacancyResponse.getAlternateUrl());
-                        System.out.println(vacancyResponse.getName());
-                        if (vacancyResponse.getAlternateUrl() != null) {
-                            Vacancy vacancy = new Vacancy();
-                            vacancy.setName(vacancyResponse.getName());
-                            vacancy.setAlternateUrl(vacancyResponse.getAlternateUrl());
-                            vacancyRepository.save(vacancy);
+            for (int i = 0;i < 100;i++) {
+                ResponseEntity<VacancyListResponse> response = restTemplate.getForEntity("https://api.hh.ru/vacancies?page=" + i + "&text=Java", VacancyListResponse.class);
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    VacancyListResponse vacancyListResponse = response.getBody();
+                    if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
+                        for (Vacancy vacancy : vacancyListResponse.getItems()) {
+                            if (vacancy.getId() != null) {
+                                Vacancy vacancyNew = new Vacancy();
+                                vacancyNew.setName(vacancy.getName());
+                                vacancyNew.setAlternateUrl(vacancy.getAlternateUrl());
+                                vacancyRepository.save(vacancyNew);
+                            }
                         }
                     }
                 }
