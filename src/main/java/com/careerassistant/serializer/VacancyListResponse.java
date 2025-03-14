@@ -11,14 +11,14 @@ import java.util.List;
 @Setter
 public class VacancyListResponse {
 
-    private List<VacancyResponse> items;
+    private List<Vacancy> items;
     private Integer total;
 
-    public List<VacancyResponse> getItems() {
+    public List<Vacancy> getItems() {
         return items;
     }
 
-    public void setItems(List<VacancyResponse> items) {
+    public void setItems(List<Vacancy> items) {
         this.items = items;
     }
 
