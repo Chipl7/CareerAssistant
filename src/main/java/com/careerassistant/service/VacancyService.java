@@ -8,6 +8,8 @@ import com.careerassistant.serializer.VacancyListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,10 +32,10 @@ public class VacancyService {
 
 
     //TODO
-    public void findAndSaveVacancy() {
+    public void findAndSaveVacancy(String vacancyName) {
         try {
             for (int i = 0;i < 100;i++) {
-                ResponseEntity<VacancyListResponse> response = restTemplate.getForEntity("https://api.hh.ru/vacancies?page=" + i + "&text=Java", VacancyListResponse.class);
+                ResponseEntity<VacancyListResponse> response = restTemplate.getForEntity("https://api.hh.ru/vacancies?page=" + i + "&text=" + vacancyName, VacancyListResponse.class);
                 if (response.getStatusCode() == HttpStatus.OK) {
                     VacancyListResponse vacancyListResponse = response.getBody();
                     if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
@@ -76,5 +78,9 @@ public class VacancyService {
 
     public void delete(Long id) {
         vacancyRepository.deleteById(id);
+    }
+
+    public List<Vacancy> findByNameContaining(String vacancyName) {
+        return vacancyRepository.findByNameContaining(vacancyName);
     }
 }
