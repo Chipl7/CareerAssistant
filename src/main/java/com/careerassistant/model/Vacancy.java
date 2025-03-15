@@ -20,8 +20,10 @@ public class Vacancy {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vacancy_id_seq")
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "url")
     @JsonProperty("alternate_url")
     private String alternateUrl;
 
