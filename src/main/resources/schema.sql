@@ -2,6 +2,6 @@ CREATE TABLE IF NOT EXISTS vacancy
 (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) not null,
-    alternate_url VARCHAR(200) not null
+    url VARCHAR(200) not null
 );
 CREATE SEQUENCE IF NOT EXISTS vacancy_id_seq START WITH 1 INCREMENT BY 1;
