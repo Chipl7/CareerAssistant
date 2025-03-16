@@ -24,8 +24,8 @@ public class Vacancy {
     @Column(name = "url")
     private String alternateUrl;
 
-//    private String experience;
-//
+    private String experience;
+
 ////    private Long salary;
 //
 //    @Column(name = "city_name")
@@ -45,7 +45,7 @@ public class Vacancy {
         this.id = desc.getId();
         this.name = desc.getName();
         this.alternateUrl = desc.getAlternateUrl();
-//        this.experience = desc.getExperience().getName();
+        this.experience = desc.getExperience().getName();
 //        this.salary = (desc.getSalary().getFrom() != null) ? desc.getSalary().getFrom() : null;
 //        this.cityName = desc.getAddress().getCity();
 //        this.street = desc.getAddress().getStreet();
