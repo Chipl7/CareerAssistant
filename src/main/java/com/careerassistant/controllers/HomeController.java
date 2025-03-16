@@ -36,9 +36,10 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/{vacancyName}")
-    public String refreshVacancy(@PathVariable String vacancyName) {
-        vacancyService.loadVacancy(vacancyName);
+    @GetMapping("/{keyword}")
+    public String refreshVacancy(Model model, @PathVariable String keyword) {
+        vacancyService.loadVacancy(keyword);
+        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
         return "home";
     }
 }
