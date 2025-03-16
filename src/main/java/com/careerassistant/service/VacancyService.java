@@ -4,23 +4,27 @@ package com.careerassistant.service;
 import com.careerassistant.exception.VacancyNotFoundException;
 import com.careerassistant.model.Vacancy;
 import com.careerassistant.repository.VacancyRepository;
-import com.careerassistant.serializer.VacancyListResponse;
+import com.careerassistant.service.dto.HhArea;
+import com.careerassistant.service.dto.HhResponsePage;
+import com.careerassistant.service.dto.HhVacancyDesc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class VacancyService {
+    private final int PER_PAGE = 100;
     private final RestTemplate restTemplate;
     private VacancyRepository vacancyRepository;
 
@@ -31,28 +35,58 @@ public class VacancyService {
     }
 
 
-    //TODO
-    public void findAndSaveVacancy(String vacancyName) {
+    public void loadVacancy(String vacancyName) {
+        ResponseEntity<List<HhArea>> response = restTemplate.exchange("https://api.hh.ru/areas" , HttpMethod.GET, null, new ParameterizedTypeReference<List<HhArea>>() {
+        });
+        for (HhArea country : response.getBody()) {
+            if (!country.getAreas().isEmpty()) {
+                for (HhArea reg : country.getAreas()) {
+                    loadRegion(vacancyName, reg.getId());
+                }
+            }
+        }
+    }
+
+
+    public void loadRegion(String vacancyName, Long regId) {
         try {
-            for (int i = 0;i < 100;i++) {
-                ResponseEntity<VacancyListResponse> response = restTemplate.getForEntity("https://api.hh.ru/vacancies?page=" + i + "&text=" + vacancyName, VacancyListResponse.class);
-                if (response.getStatusCode() == HttpStatus.OK) {
-                    VacancyListResponse vacancyListResponse = response.getBody();
-                    if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
-                        for (Vacancy vacancy : vacancyListResponse.getItems()) {
-                            if (vacancy.getId() != null) {
-                                Vacancy vacancyNew = new Vacancy();
-                                vacancyNew.setName(vacancy.getName());
-                                vacancyNew.setAlternateUrl(vacancy.getAlternateUrl());
-                                vacancyRepository.save(vacancyNew);
-                            }
-                        }
+            for (int i = 0;i < 20;i++) {
+                List<Vacancy> vacancyList = null;
+                try {
+                    vacancyList = loadPage(i, PER_PAGE, regId, vacancyName);
+                } catch (Exception e){
+                    Thread.sleep(3000);
+                    try {
+                        vacancyList = loadPage(i, PER_PAGE, regId, vacancyName);
+                    } catch (Exception e1){
                     }
+                }
+                if(vacancyList != null && !vacancyList.isEmpty()) {
+                    vacancyRepository.saveAll(vacancyList);
+                } else {
+                    break;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List<Vacancy> loadPage(int pageNum, int perPage, long locId, String vacancyName){
+        List<Vacancy> result = new ArrayList<>();
+        String url = "https://api.hh.ru/vacancies?page=" + pageNum + "&per_page=" + perPage + "&text=" + vacancyName + "&area=" + locId;
+        ResponseEntity<HhResponsePage> response = restTemplate.getForEntity(url, HhResponsePage.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            HhResponsePage vacancyListResponse = response.getBody();
+            if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
+                for (HhVacancyDesc vacancy : vacancyListResponse.getItems()) {
+                    if (vacancy.getId() != null) {
+                        result.add(new Vacancy(vacancy, vacancyName));
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public void save(Vacancy vacancy) {
@@ -80,7 +114,7 @@ public class VacancyService {
         vacancyRepository.deleteById(id);
     }
 
-    public List<Vacancy> findByNameContaining(String vacancyName) {
-        return vacancyRepository.findByNameContaining(vacancyName);
+    public List<Vacancy> findByKeyword(String keyword) {
+        return vacancyRepository.findByKeyword(keyword);
     }
 }
