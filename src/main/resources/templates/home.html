@@ -4,21 +4,25 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
-<form action="/" method="post">
-    <label>
-        <input type="text" name="keyword" placeholder="Введите название вакансии" required>
-    </label>
-    <button type="submit">Поиск</button>
-</form>
-    <div th:if="${vacancyList == null or vacancyList.isEmpty()}">
-        No items available
+    <body>
+    <form action="/" method="post">
+        <label>
+            <input type="text" name="keyword" placeholder="Введите название вакансии" required>
+        </label>
+        <button type="submit">Поиск</button>
+    </form>
+
+    <div>
+        <div th:if="${vacancyList == null or vacancyList.isEmpty()}">
+            No items available
+        </div>
         <ul th:if="${vacancyList != null and not vacancyList.isEmpty()}">
             <table>
                 <thead>
                 <tr>
                     <th>Название вакансии</th>
                     <th>Ссылка</th>
+                </tr>
                 </thead>
                 <tbody>
                 <tr th:each="vacancy : ${vacancyList}">
@@ -39,5 +43,5 @@
     <!--            <a th:href="@{vacancies(page=${currentPage + 1})}"> Вперёд</a>-->
     <!--        </span>-->
     <!--    </div>-->
-</body>
+    </body>
 </html>
