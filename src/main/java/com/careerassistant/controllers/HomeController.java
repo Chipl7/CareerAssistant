@@ -24,13 +24,16 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        model.addAttribute("keyword", keyword != null ? keyword : "");
         model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
         return "home";
     }
 
     @PostMapping("/")
-    public String vacancy(@RequestParam("vacancyName") String vacancyName, Model model) {
-        return "redirect:/";
+    public String vacancy(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
+        return "home";
     }
 
     @GetMapping("/{vacancyName}")
