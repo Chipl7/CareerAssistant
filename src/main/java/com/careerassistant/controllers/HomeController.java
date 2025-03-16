@@ -1,21 +1,21 @@
 package com.careerassistant.controllers;
 
-import com.careerassistant.model.Vacancy;
+
 import com.careerassistant.service.VacancyService;
-import org.apache.tomcat.Jar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 @Controller
 public class HomeController {
-    private VacancyService vacancyService;
+    private final VacancyService vacancyService;
 
     @Autowired
     public HomeController(VacancyService vacancyService) {
@@ -23,15 +23,19 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(@RequestParam(value = "vacancyName", required = false) String vacancyName, Model model) {
-        model.addAttribute("vacancyName", new String());
-        model.addAttribute("vacancyList", vacancyService.findAll());
+    public String home(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
         return "home";
     }
 
     @PostMapping("/")
     public String vacancy(@RequestParam("vacancyName") String vacancyName, Model model) {
-        vacancyService.findAndSaveVacancy(vacancyName);
         return "redirect:/";
+    }
+
+    @GetMapping("/{vacancyName}")
+    public String refreshVacancy(@PathVariable String vacancyName) {
+        vacancyService.loadVacancy(vacancyName);
+        return "home";
     }
 }
