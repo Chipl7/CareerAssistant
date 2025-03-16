@@ -5,32 +5,32 @@
     <title>Title</title>
 </head>
 <body>
-Start Page
 <form action="/" method="post">
-    <input type="text" name="vacancyName" placeholder="Введите название вакансии" required>
+    <label>
+        <input type="text" name="keyword" placeholder="Введите название вакансии" required>
+    </label>
     <button type="submit">Поиск</button>
 </form>
-<form>
-    <p th:if="${vacancyList == null or vacancyList.isEmpty()}">
+    <div th:if="${vacancyList == null or vacancyList.isEmpty()}">
         No items available
-    </p>
-    <ul th:if="${vacancyList != null and not vacancyList.isEmpty()}">
-        <table>
-            <thead>
-            <tr>
-                <th>Название вакансии</th>
-                <th>Ссылка</th>
-            </thead>
-            <tbody>
-            <tr th:each="vacancy : ${vacancyList}">
-                <td th:text="${vacancy.name}"></td>
-                <td>
-                    <a th:href="${vacancy.alternateUrl}" th:text="'Ссылка на вакансию'"></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </ul>
+        <ul th:if="${vacancyList != null and not vacancyList.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Название вакансии</th>
+                    <th>Ссылка</th>
+                </thead>
+                <tbody>
+                <tr th:each="vacancy : ${vacancyList}">
+                    <td th:text="${vacancy.name}"></td>
+                    <td>
+                        <a th:href="${vacancy.alternateUrl}" th:text="'Ссылка на вакансию'"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </ul>
+    </div>
     <!--    <div>-->
     <!--        <span th:if="${currentPage > 1}">-->
     <!--            <a th:href="@{vacancies(page=${currentPage - 1})}"> Назад</a>-->
@@ -39,6 +39,5 @@ Start Page
     <!--            <a th:href="@{vacancies(page=${currentPage + 1})}"> Вперёд</a>-->
     <!--        </span>-->
     <!--    </div>-->
-</form>
 </body>
 </html>
