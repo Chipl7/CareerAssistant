@@ -81,6 +81,10 @@ public class VacancyService {
             if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
                 for (HhVacancyDesc vacancy : vacancyListResponse.getItems()) {
                     if (vacancy.getId() != null) {
+                        System.out.println(vacancy.getId());
+                        System.out.println(vacancy.getName());
+                        System.out.println(vacancy.getExperience().getName());
+                        System.out.println(vacancy.getAlternateUrl());
                         result.add(new Vacancy(vacancy, vacancyName));
                     }
                 }
