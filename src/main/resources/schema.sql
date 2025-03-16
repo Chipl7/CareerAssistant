@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS vacancy
     id BIGSERIAL PRIMARY KEY,
     keyword VARCHAR(255),
     name VARCHAR(255) not null,
-    url VARCHAR(2048)
---     experience VARCHAR(255) not null,
+    url VARCHAR(2048),
+    experience VARCHAR(255) not null
 --     salary BIGSERIAL,
 --     city_name VARCHAR(255),
 --     street VARCHAR(255),
