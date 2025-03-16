@@ -21,12 +21,14 @@
                 <thead>
                 <tr>
                     <th>Название вакансии</th>
+                    <th>Опыт</th>
                     <th>Ссылка</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="vacancy : ${vacancyList}">
                     <td th:text="${vacancy.name}"></td>
+                    <td th:text="${vacancy.experience}"></td>
                     <td>
                         <a th:href="${vacancy.alternateUrl}" th:text="'Ссылка на вакансию'"></a>
                     </td>
