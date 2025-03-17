@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,10 +57,14 @@ public class VacancyService {
                 try {
                     vacancyList = loadPage(i, PER_PAGE, regId, vacancyName);
                 } catch (Exception e){
-                    Thread.sleep(3000);
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e1) {
+                        Thread.currentThread().interrupt();
+                    }
                     try {
                         vacancyList = loadPage(i, PER_PAGE, regId, vacancyName);
-                    } catch (Exception e1){
+                    } catch (Exception e2) {
                     }
                 }
                 if(vacancyList != null && !vacancyList.isEmpty()) {
@@ -97,8 +103,8 @@ public class VacancyService {
         vacancyRepository.save(vacancy);
     }
 
-    public List<Vacancy> findAll() {
-        return vacancyRepository.findAll();
+    public Page<Vacancy> findAll(Pageable pageable) {
+        return vacancyRepository.findAll(pageable);
     }
 
     public Vacancy findById(Long id) {
@@ -118,7 +124,11 @@ public class VacancyService {
         vacancyRepository.deleteById(id);
     }
 
-    public List<Vacancy> findByKeyword(String keyword) {
-        return vacancyRepository.findByKeyword(keyword);
+//    public List<Vacancy> findByKeyword(String keyword) {
+//        return vacancyRepository.findByKeyword(keyword);
+//    }
+
+    public Page<Vacancy> findByKeyword(String keyword, Pageable pageable) {
+        return vacancyRepository.findByKeyword(keyword, pageable);
     }
 }
