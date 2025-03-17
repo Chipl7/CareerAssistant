@@ -3,6 +3,8 @@ package com.careerassistant.controllers;
 
 import com.careerassistant.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,23 +25,26 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+    public String home(@RequestParam(value = "keyword", required = false) String keyword,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "100") int limit, Model model) {
         model.addAttribute("keyword", keyword != null ? keyword : "");
-        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
+        model.addAttribute("vacancyList", vacancyService.findAll(PageRequest.of(page, limit)));
         return "home";
     }
 
     @PostMapping("/")
-    public String vacancy(@RequestParam("keyword") String keyword, Model model) {
+    public String vacancy(@RequestParam(value = "keyword", required = false) String keyword,
+                          @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "100") int limit, Model model) {
         model.addAttribute("keyword", keyword);
-        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
+        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword, PageRequest.of(page, limit)));
         return "home";
     }
 
     @GetMapping("/{keyword}")
-    public String refreshVacancy(Model model, @PathVariable String keyword) {
+    public String refreshVacancy(@PathVariable String keyword) {
         vacancyService.loadVacancy(keyword);
-        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword));
-        return "home";
+        return "redirect:/";
     }
 }
