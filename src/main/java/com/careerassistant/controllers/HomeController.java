@@ -1,8 +1,11 @@
 package com.careerassistant.controllers;
 
 
+import com.careerassistant.model.Vacancy;
 import com.careerassistant.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -27,16 +30,25 @@ public class HomeController {
     @GetMapping("/")
     public String home(@RequestParam(value = "keyword", required = false) String keyword,
                        @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "100") int limit, Model model) {
+                       @RequestParam(defaultValue = "20") int limit, Model model) {
         model.addAttribute("keyword", keyword != null ? keyword : "");
-        model.addAttribute("vacancyList", vacancyService.findAll(PageRequest.of(page, limit)));
+        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword, PageRequest.of(page, limit)));
+        return "home";
+    }
+
+    @GetMapping("/page={id}/{keyword}")
+    public String vacancyPage(@PathVariable String keyword,
+                              @RequestParam(defaultValue = "20") int limit,
+                              @PathVariable int id, Model model) {
+        model.addAttribute("keyword", keyword != null ? keyword : "");
+        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword, PageRequest.of(id, limit)));
         return "home";
     }
 
     @PostMapping("/")
     public String vacancy(@RequestParam(value = "keyword", required = false) String keyword,
                           @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "100") int limit, Model model) {
+                          @RequestParam(defaultValue = "20") int limit, Model model) {
         model.addAttribute("keyword", keyword);
         model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword, PageRequest.of(page, limit)));
         return "home";
