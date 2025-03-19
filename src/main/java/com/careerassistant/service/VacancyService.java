@@ -37,25 +37,25 @@ public class VacancyService {
     }
 
 
-    public void loadVacancy(String vacancyName) {
+    public void loadVacancy(String keyword) {
         ResponseEntity<List<HhArea>> response = restTemplate.exchange("https://api.hh.ru/areas" , HttpMethod.GET, null, new ParameterizedTypeReference<List<HhArea>>() {
         });
         for (HhArea country : response.getBody()) {
             if (!country.getAreas().isEmpty()) {
                 for (HhArea reg : country.getAreas()) {
-                    loadRegion(vacancyName, reg.getId());
+                    loadRegion(keyword, reg.getId());
                 }
             }
         }
     }
 
 
-    public void loadRegion(String vacancyName, Long regId) {
+    public void loadRegion(String keyword, Long regId) {
         try {
             for (int i = 0;i < 20;i++) {
                 List<Vacancy> vacancyList = null;
                 try {
-                    vacancyList = loadPage(i, PER_PAGE, regId, vacancyName);
+                    vacancyList = loadPage(i, PER_PAGE, regId, keyword);
                 } catch (Exception e){
                     try {
                         Thread.sleep(3000);
@@ -63,7 +63,7 @@ public class VacancyService {
                         Thread.currentThread().interrupt();
                     }
                     try {
-                        vacancyList = loadPage(i, PER_PAGE, regId, vacancyName);
+                        vacancyList = loadPage(i, PER_PAGE, regId, keyword);
                     } catch (Exception e2) {
                     }
                 }
@@ -78,20 +78,20 @@ public class VacancyService {
         }
     }
 
-    private List<Vacancy> loadPage(int pageNum, int perPage, long locId, String vacancyName){
+    private List<Vacancy> loadPage(int pageNum, int perPage, long locId, String keyword){
         List<Vacancy> result = new ArrayList<>();
-        String url = "https://api.hh.ru/vacancies?page=" + pageNum + "&per_page=" + perPage + "&text=" + vacancyName + "&area=" + locId;
+        String url = "https://api.hh.ru/vacancies?page=" + pageNum + "&per_page=" + perPage + "&text=" + keyword + "&area=" + locId;
         ResponseEntity<HhResponsePage> response = restTemplate.getForEntity(url, HhResponsePage.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             HhResponsePage vacancyListResponse = response.getBody();
             if (vacancyListResponse != null && vacancyListResponse.getItems() != null && !vacancyListResponse.getItems().isEmpty()) {
                 for (HhVacancyDesc vacancy : vacancyListResponse.getItems()) {
-                    if (vacancy.getId() != null) {
+                    if (vacancy.getId() != null && vacancy.getName().contains(keyword)) {
                         System.out.println(vacancy.getId());
                         System.out.println(vacancy.getName());
                         System.out.println(vacancy.getExperience().getName());
                         System.out.println(vacancy.getAlternateUrl());
-                        result.add(new Vacancy(vacancy, vacancyName));
+                        result.add(new Vacancy(vacancy, keyword));
                     }
                 }
             }
