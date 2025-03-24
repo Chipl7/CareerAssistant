@@ -38,7 +38,7 @@ public class VacancyService {
 
 
     public void loadVacancy(String keyword) {
-        ResponseEntity<List<HhArea>> response = restTemplate.exchange("https://api.hh.ru/areas" , HttpMethod.GET, null, new ParameterizedTypeReference<List<HhArea>>() {
+        ResponseEntity<List<HhArea>> response = restTemplate.exchange("https://api.hh.ru/areas" , HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
         for (HhArea country : response.getBody()) {
             if (!country.getAreas().isEmpty()) {
@@ -120,11 +120,7 @@ public class VacancyService {
                 });
     }
 
-    public void delete(Long id) {
-        vacancyRepository.deleteById(id);
-    }
-
-//    public List<Vacancy> findByKeyword(String keyword) {
+    //    public List<Vacancy> findByKeyword(String keyword) {
 //        return vacancyRepository.findByKeyword(keyword);
 //    }
 
