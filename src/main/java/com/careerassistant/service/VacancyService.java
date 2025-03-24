@@ -38,6 +38,7 @@ public class VacancyService {
 
 
     public void loadVacancy(String keyword) {
+        keyword = keyword.replace("+", " ");
         ResponseEntity<List<HhArea>> response = restTemplate.exchange("https://api.hh.ru/areas" , HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
         for (HhArea country : response.getBody()) {
@@ -99,16 +100,8 @@ public class VacancyService {
         return result;
     }
 
-    public void save(Vacancy vacancy) {
-        vacancyRepository.save(vacancy);
-    }
-
     public Page<Vacancy> findAll(Pageable pageable) {
         return vacancyRepository.findAll(pageable);
-    }
-
-    public Vacancy findById(Long id) {
-        return vacancyRepository.findById(id).orElseThrow(() -> new VacancyNotFoundException(id));
     }
 
     public Optional<Vacancy> update(Vacancy newVacancy, Long id) {
@@ -119,10 +112,6 @@ public class VacancyService {
                     return vacancyRepository.save(vacancy);
                 });
     }
-
-    //    public List<Vacancy> findByKeyword(String keyword) {
-//        return vacancyRepository.findByKeyword(keyword);
-//    }
 
     public Page<Vacancy> findByKeyword(String keyword, Pageable pageable) {
         return vacancyRepository.findByKeyword(keyword, pageable);
