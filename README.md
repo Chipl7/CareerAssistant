@@ -3,3 +3,8 @@
 ### Стек: Java 17, Framework Spring, Spring Boot, Spring Web, Spring Data Jpa, Spring Test, Postgresql, lombok, для сборки используется Maven.
 
 Разобраться с токеном, резуме и авторизацией
+
+Данные для авторизации:
+Redirect URI https://careeassistant
+Client ID JLO3VFJ18BC3I7VINDOC7QSRN0JTTUGMSGJ8TGCL8QJ9QTCSA3QNOBR3N3CNS16T
+Client Secret K5RRV95VDSUGEPTEAD8IISVJDM74731A3SUKTKBMJLMGC5DQJRRU3I1PP6VUGK6G
