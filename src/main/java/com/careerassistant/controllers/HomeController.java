@@ -28,6 +28,7 @@ public class HomeController {
                        @RequestParam(defaultValue = "20") int limit, Model model) {
         model.addAttribute("keyword", keyword != null ? keyword : "");
         model.addAttribute("vacancyList", vacancyService.findAll(PageRequest.of(page, limit)));
+        model.addAttribute("totalVacancy", vacancyService.countAll());
         return "home";
     }
 
@@ -40,14 +41,14 @@ public class HomeController {
         return "home";
     }
 
-    @PostMapping("/")
-    public String vacancy(@RequestParam(value = "keyword", required = false) String keyword,
-                          @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "20") int limit, Model model) {
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("vacancyList", vacancyService.findByKeyword(keyword, PageRequest.of(page, limit)));
-        return "home";
-    }
+//    @PostMapping("/")
+//    public String vacancy(@RequestParam(value = "keyword", required = false) String keyword,
+//                          @RequestParam(defaultValue = "20") int limit,
+//                          @PathVariable int id, Model model) {
+//        model.addAttribute("keyword", keyword != null ? keyword : "");
+//        model.addAttribute("vacancyList", vacancyService.findBySubString(keyword));
+//        return "home";
+//    }
 
     @GetMapping("/{keyword}")
     public String refreshVacancy(@PathVariable String keyword) {
