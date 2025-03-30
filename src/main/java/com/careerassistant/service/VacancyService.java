@@ -1,7 +1,6 @@
 package com.careerassistant.service;
 
 
-import com.careerassistant.exception.VacancyNotFoundException;
 import com.careerassistant.model.Vacancy;
 import com.careerassistant.repository.VacancyRepository;
 import com.careerassistant.service.dto.HhArea;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -36,7 +36,6 @@ public class VacancyService {
         this.vacancyRepository = vacancyRepository;
     }
 
-
     public void loadVacancy(String keyword) {
         keyword = keyword.replace("+", " ");
         ResponseEntity<List<HhArea>> response = restTemplate.exchange("https://api.hh.ru/areas" , HttpMethod.GET, null, new ParameterizedTypeReference<>() {
@@ -49,7 +48,6 @@ public class VacancyService {
             }
         }
     }
-
 
     public void loadRegion(String keyword, Long regId) {
         try {
@@ -98,6 +96,16 @@ public class VacancyService {
             }
         }
         return result;
+    }
+
+    public List<Vacancy> findBySubString(String keyword) {
+        List<Vacancy> vacancyList = new ArrayList<>();
+        for(Vacancy vacancy : vacancyRepository.findAll()) {
+            if(vacancy.getName().contains(keyword)) {
+                vacancyList.add(vacancy);
+            }
+        }
+        return vacancyList;
     }
 
     public Page<Vacancy> findAll(Pageable pageable) {
