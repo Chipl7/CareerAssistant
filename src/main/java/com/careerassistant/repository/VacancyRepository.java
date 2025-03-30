@@ -9,8 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
-//    List<Vacancy> findByKeyword(String keyword);
     Page<Vacancy> findByKeyword(String keyword, Pageable pageable);
-    Long countByKeyword(String keyword);
     Page<Vacancy> findAll(Pageable pageable);
+    Page<Vacancy> findAllByNameLike(String keyword);
 }
