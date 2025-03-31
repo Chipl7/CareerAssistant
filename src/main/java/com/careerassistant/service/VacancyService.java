@@ -98,14 +98,8 @@ public class VacancyService {
         return result;
     }
 
-    public List<Vacancy> findBySubString(String keyword) {
-        List<Vacancy> vacancyList = new ArrayList<>();
-        for(Vacancy vacancy : vacancyRepository.findAll()) {
-            if(vacancy.getName().contains(keyword)) {
-                vacancyList.add(vacancy);
-            }
-        }
-        return vacancyList;
+    public Page<Vacancy> findByNameIgnoreCaseContaining(String keyword, Pageable pageable) {
+        return vacancyRepository.findByNameIgnoreCaseContaining(keyword, pageable);
     }
 
     public Page<Vacancy> findAll(Pageable pageable) {
@@ -121,7 +115,15 @@ public class VacancyService {
                 });
     }
 
-    public Page<Vacancy> findByKeyword(String keyword, Pageable pageable) {
-        return vacancyRepository.findByKeyword(keyword, pageable);
+    public Page<Vacancy> findByKeywordIgnoreCase(String keyword, Pageable pageable) {
+        return vacancyRepository.findByKeywordIgnoreCase(keyword, pageable);
+    }
+
+    public long count() {
+        return vacancyRepository.count();
+    }
+
+    public long countByNameIgnoreCaseContaining(String keyword) {
+        return vacancyRepository.countByNameIgnoreCaseContaining(keyword);
     }
 }
